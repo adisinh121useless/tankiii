@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kisses And Cuddles? 🐱</title>
+    <style>
+        :root {
+            --primary-pink: #ff4d6d;
+            --soft-pink: #ffdae0;
+            --white: #ffffff;
+        }
+
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: var(--soft-pink);
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+            position: relative;
+            transition: background-color 0.4s ease;
+        }
+
+        .flower {
+            position: absolute;
+            font-size: 25px;
+            pointer-events: none;
+            z-index: 0;
+            animation: float 5s linear forwards;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(110vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-20vh) rotate(360deg); opacity: 0; }
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 30px;
+            box-shadow: 0 15px 35px rgba(255, 77, 109, 0.3);
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+            height: 600px;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 15px;
+            overflow: hidden;
+            position: relative;
+            transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .card.success-mode {
+            height: 400px;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        #catGif {
+            max-height: 200px;
+            border-radius: 20px;
+            margin-top: 10px;
+            flex-shrink: 0;
+            transition: all 0.5s ease;
+        }
+
+        h1 {
+            color: var(--primary-pink);
+            font-size: 22px;
+            margin: 10px 0;
+            line-height: 1.4;
+            z-index: 20;
+            transition: all 0.5s ease;
+        }
+
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            width: 100%;
+            height: 100%; 
+            position: relative;
+        }
+
+        #yesBtn {
+            padding: 12px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            background-color: var(--primary-pink);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            z-index: 15;
+            transition: all 0.15s ease;
+        }
+
+        #noBtn {
+            padding: 10px 25px;
+            background-color: #adb5bd;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            z-index: 30; 
+            position: relative; 
+            transition: background-color 0.3s;
+            /* Prevents text highlighting while tapping on mobile */
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+    </style>
+</head>
+<body>
+
+    <audio id="successMusic" loop>
+    <source src="https://www.dropbox.com/scl/fi/0nz84m9utzv4qxmnu2zex/main-tera-ho-gaya_6bgHscrl.mp3?rlkey=8byhfrvshra9t10om4zheavdm&st=a9hdzmjz&raw=1" type="audio/mpeg">
+</audio>
+
+    <div id="flower-container"></div>
+
+    <div class="card" id="mainCard">
+        <img id="catGif" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpueGZ3bmZueXp4Y3R3ZzZ4eXp4eXp4eXp4eXp4eXp4eXp4eXomZXA9djFfaW50ZXJuYWxfZ2lmX2J5X2lkJmN0PWc/Zl7u48zLVFgLpRwq6f/giphy.gif">
+        
+        <h1 id="question">Tankii will you be my Valentine? 😎😙</h1>
+        
+        <div class="btn-container" id="interactionArea">
+            <button id="yesBtn">Yes</button>
+            <button id="noBtn">No</button>
+        </div>
+    </div>
+
+    <script>
+        const noBtn = document.getElementById('noBtn');
+        const yesBtn = document.getElementById('yesBtn');
+        const area = document.getElementById('interactionArea');
+        const mainCard = document.getElementById('mainCard');
+        const catGif = document.getElementById('catGif');
+        const question = document.getElementById('question');
+        const flowerContainer = document.getElementById('flower-container');
+        const music = document.getElementById('successMusic');
+
+        let flowerInterval;
+        let currentEmojiSet = ['🌸', '💮', '🌺', '🌷', '✨'];
+        let hasMoved = false;
+
+        function createSingleFlower() {
+            const flower = document.createElement('div');
+            flower.className = 'flower';
+            flower.innerText = currentEmojiSet[Math.floor(Math.random() * currentEmojiSet.length)];
+            flower.style.left = Math.random() * 100 + "vw";
+            flower.style.animationDuration = (Math.random() * 2 + 3) + "s"; 
+            flowerContainer.appendChild(flower);
+            setTimeout(() => flower.remove(), 5000);
+        }
+
+        function spawnBurst(count) {
+            for(let i = 0; i < count; i++) {
+                setTimeout(createSingleFlower, i * 40);
+            }
+        }
+
+        function startEmojiStream(speed) {
+            clearInterval(flowerInterval);
+            flowerInterval = setInterval(createSingleFlower, speed);
+        }
+
+        // Logic to move the button
+        function moveNoButton() {
+            if (!hasMoved) {
+                noBtn.style.position = 'absolute';
+                hasMoved = true;
+            }
+
+            currentEmojiSet = ['😡', '🔫', '🔪','🗡️', '💔'];
+            document.body.style.backgroundColor = "#b0b0b0";
+            catGif.src = "https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExdXdzcHkzMjJ1OHRxaW5haWttc3AzOXJoam56MTV4dGlqeGxkcjF6ayZlcD12MV9naWZzX3NlYXJjaCZjdD1n/901mxGLGQN2PyCQpoc/giphy.webp";
+
+            const maxX = area.clientWidth - noBtn.offsetWidth;
+            const maxY = area.clientHeight - noBtn.offsetHeight;
+            
+            noBtn.style.left = `${Math.floor(Math.random() * maxX)}px`;
+            noBtn.style.top = `${Math.floor(Math.random() * maxY)}px`;
+
+            let curFont = parseInt(window.getComputedStyle(yesBtn).fontSize);
+            if (curFont < 100) {
+                yesBtn.style.padding = (parseInt(window.getComputedStyle(yesBtn).paddingTop) + 6) + "px " + (parseInt(window.getComputedStyle(yesBtn).paddingLeft) + 12) + "px";
+                yesBtn.style.fontSize = (curFont + 5) + "px";
+            }
+        }
+
+        // Hover for Desktop
+        noBtn.addEventListener('mouseover', moveNoButton);
+
+        // Touch for Mobile
+        noBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault(); // Prevents "phantom" clicks
+            moveNoButton();
+        });
+
+        yesBtn.addEventListener('click', () => {
+            // Audio Play
+            music.play().catch(e => console.log("Audio play blocked until interaction."));
+
+            currentEmojiSet = ['🌸', '💮', '🌺', '🌷', '✨', '💖'];
+            document.body.style.backgroundColor = "#ffdae0";
+            catGif.src = "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExdXdzcHkzMjJ1OHRxaW5haWttc3AzOXJoam56MTV4dGlqeGxkcjF6ayZlcD12MV9naWZzX3NlYXJjaCZjdD1n/3UkqVq3F50bVCi9URl/200w.webp";
+            
+            // Fixed String (No line break errors)
+            question.innerHTML = "Yay! So you ready for this level of intimacy n shi! 🥰🌹<br><small>I dont like you that much okay?</small>";
+            
+            mainCard.classList.add('success-mode'); 
+            area.style.display = "none";
+            catGif.style.maxHeight = "220px";
+
+            spawnBurst(50);
+            startEmojiStream(80);
+        });
+
+        // Start Initial Flowers
+        spawnBurst(15);
+        startEmojiStream(400);
+    </script>
+</body>
+</html>
